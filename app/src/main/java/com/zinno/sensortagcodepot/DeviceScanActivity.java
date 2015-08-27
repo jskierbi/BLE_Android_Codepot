@@ -54,11 +54,15 @@ public class DeviceScanActivity extends ListActivity
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_scan:
-                        //TODO start scanning
+                        leDeviceListAdapter.clear();
+                        if (scanner != null)
+                            scanner.start();
                         refreshMenu();
                         break;
                     case R.id.menu_stop:
-                        //TODO stop scanning
+                        if (scanner != null)
+                            scanner.stop();
+                        refreshMenu();
                         break;
                 }
                 return true;
@@ -86,8 +90,10 @@ public class DeviceScanActivity extends ListActivity
         scanner = new BleDevicesScanner(bluetoothAdapter, new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
-                //TODO add device to list
-                //TODO filter only SensorTags
+                if (device != null && SENSOR_TAG_PROD_NAME.equals(device.getName())) {
+                    leDeviceListAdapter.addDevice(device, rssi);
+                    leDeviceListAdapter.notifyDataSetChanged();
+                }
             }
         });
         scanner.setScanPeriod(SCAN_PERIOD);
