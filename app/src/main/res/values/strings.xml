@@ -15,4 +15,8 @@
 
     <string name="menu_scan">Scan</string>
     <string name="menu_stop">Stop</string>
+
+    <string name="first_device">First</string>
+    <string name="second_device">Second</string>
+    <string name="use_chosen_device_as">Use chosen device as:</string>
 </resources>

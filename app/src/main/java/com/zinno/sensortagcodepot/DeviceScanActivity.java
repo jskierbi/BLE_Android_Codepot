@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.zinno.sensortagcodepot.adapters.BleDevicesAdapter;
+import com.zinno.sensortagcodepot.dialogs.DecideDeviceDialogFragment;
 import com.zinno.sensortagcodepot.dialogs.EnableBluetoothDialog;
 import com.zinno.sensortagcodepot.dialogs.ErrorDialog;
 import com.zinno.sensortaglibrary.ble.BleDevicesScanner;
@@ -161,7 +162,8 @@ public class DeviceScanActivity extends ListActivity
         if (device == null)
             return;
 
-        //TODO save which device will be use
+        DecideDeviceDialogFragment decideDeviceDialogFragment = DecideDeviceDialogFragment.newInstance(device);
+        decideDeviceDialogFragment.show(getFragmentManager(), "DecideDeviceDialogFragment");
     }
 
     private void init() {
