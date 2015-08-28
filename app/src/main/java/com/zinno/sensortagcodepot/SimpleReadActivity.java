@@ -8,6 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.zinno.sensortaglibrary.sensor.TiAccelerometerSensor;
+import com.zinno.sensortaglibrary.sensor.TiSensor;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action0;
@@ -15,10 +17,10 @@ import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.Subscriptions;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
-import static rx.schedulers.Schedulers.io;
 
 /**
  * Created on 08/28/2015.
@@ -43,18 +45,8 @@ public class SimpleReadActivity extends AppCompatActivity {
     setContentView(R.layout.simple_activity);
     ButterKnife.inject(this);
 
-    subscribeConnectBle();
+    subscribeConnectEvents();
     subscribeUiSubject();
-
-    mScanSubject.onNext(ConnBle.CONNECT);
-    Observable.just(ConnBle.DISCONNECT)
-        .delay(3, TimeUnit.SECONDS)
-        .subscribe(new Action1<ConnBle>() {
-          @Override
-          public void call(ConnBle connBle) {
-            mScanSubject.onNext(connBle);
-          }
-        });
   }
 
   @Override
@@ -67,16 +59,27 @@ public class SimpleReadActivity extends AppCompatActivity {
 
   @OnClick(R.id.btn_read_adv)
   void readAdvClick() {
-
+    subscribeConnect();
   }
 
-  private void subscribeConnectBle() {
+  private void subscribeConnect() {
+    mConnectBleSubscription.unsubscribe();
+    mScanSubject.onNext(ConnBle.CONNECT);
+    mConnectBleSubscription = Observable.just(ConnBle.DISCONNECT)
+        .delay(3, TimeUnit.SECONDS)
+        .subscribe(new Action1<ConnBle>() {
+          @Override
+          public void call(ConnBle connBle) {
+            mScanSubject.distinct();
+          }
+        });
+  }
+
+  private void subscribeConnectEvents() {
     final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
     final BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
 
-    mConnectBleSubscription.unsubscribe();
-    mConnectBleSubscription = mScanSubject
-        .observeOn(io())
+    mScanSubject
         .subscribe(new Action1<ConnBle>() {
           boolean flgScanning;
 
@@ -102,7 +105,8 @@ public class SimpleReadActivity extends AppCompatActivity {
     @Override
     public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
       Log.d(TAG, "onLeScan " + bluetoothDevice);
-      if (bluetoothDevice.getAddress().equals("5C:31:3E:87:B4:1A")) {
+//      if (bluetoothDevice.getAddress().equals("5C:31:3E:87:B4:1A")) {
+      if (bluetoothDevice.getAddress().toUpperCase().equals("B4:99:4C:34:DE:3F")) {
         mScanSubject.onNext(ConnBle.DISCONNECT);
         final BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(SimpleReadActivity.this, false, mGattCallback);
         mConnDeviceSubscription.unsubscribe();
@@ -137,7 +141,14 @@ public class SimpleReadActivity extends AppCompatActivity {
       super.onServicesDiscovered(gatt, status);
 
       if (status == BluetoothGatt.GATT_SUCCESS) {
-//        broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
+        BluetoothGattService service = gatt.getService(UUID.fromString(TiAccelerometerSensor.UUID_SERVICE));
+        BluetoothGattCharacteristic charData = service.getCharacteristic(UUID.fromString(TiAccelerometerSensor.UUID_DATA));
+        gatt.setCharacteristicNotification(charData, true);
+
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(TiAccelerometerSensor.UUID_CONFIG));
+        characteristic.setValue(new byte[]{(byte) 1});
+        gatt.writeCharacteristic(characteristic);
+
       } else {
         Log.w(TAG, "onServicesDiscovered received: " + status);
       }
@@ -158,6 +169,11 @@ public class SimpleReadActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+      Log.d(TAG, "onCharacteristicChanged " + characteristic);
+    }
+
+    @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
       if (status == BluetoothGatt.GATT_SUCCESS) {
         mUiSubject.onNext("onCharacteristicRead: " + characteristic);
@@ -165,24 +181,15 @@ public class SimpleReadActivity extends AppCompatActivity {
       }
     }
 
-    // -------
-    @Override
-    public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-      super.onMtuChanged(gatt, mtu, status);
-    }
-
-    @Override
-    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-      super.onReadRemoteRssi(gatt, rssi, status);
-    }
-
     @Override
     public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
+      Log.d(TAG, "onReliableWriteCompleted " + status);
       super.onReliableWriteCompleted(gatt, status);
     }
 
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+      Log.d(TAG, "onDescriptorWrite ");
       super.onDescriptorWrite(gatt, descriptor, status);
     }
 
@@ -192,13 +199,14 @@ public class SimpleReadActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-      super.onCharacteristicChanged(gatt, characteristic);
-    }
-
-    @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-      super.onCharacteristicWrite(gatt, characteristic, status);
+      Log.d(TAG, "onCharacteristicWrite ");
+
+      BluetoothGattService service = gatt.getService(UUID.fromString(TiAccelerometerSensor.UUID_SERVICE));
+      BluetoothGattCharacteristic charData = service.getCharacteristic(UUID.fromString(TiAccelerometerSensor.UUID_DATA));
+      BluetoothGattDescriptor descriptor = charData.getDescriptor(UUID.fromString(TiSensor.CHARACTERISTIC_CONFIG));
+      descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+      gatt.writeDescriptor(descriptor);
     }
   };
 }
