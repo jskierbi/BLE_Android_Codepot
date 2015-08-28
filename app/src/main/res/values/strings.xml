@@ -19,4 +19,8 @@
     <string name="first_device">First</string>
     <string name="second_device">Second</string>
     <string name="use_chosen_device_as">Use chosen device as:</string>
+    <string name="title_activity_accelerometer">AccelerometerActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
