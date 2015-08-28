@@ -42,6 +42,9 @@
             android:name=".HumidityActivity"
             android:label="@string/title_activity_humidity" >
         </activity>
+        <activity android:name=".TemperatureActivity"
+            android:label="@string/title_activity_tempture"
+            ></activity>
     </application>
 
 </manifest>

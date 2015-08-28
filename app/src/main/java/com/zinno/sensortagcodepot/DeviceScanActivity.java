@@ -165,7 +165,7 @@ public class DeviceScanActivity extends ListActivity
 //        DecideDeviceDialogFragment decideDeviceDialogFragment = DecideDeviceDialogFragment.newInstance(device);
 //        decideDeviceDialogFragment.show(getFragmentManager(), "DecideDeviceDialogFragment");
 
-        Intent intent = new Intent(this, HumidityActivity.class);
+        Intent intent = new Intent(this, TemperatureActivity.class);
         intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_NAME, "Acceleration Sensor");
         intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
         startActivity(intent);
