@@ -47,7 +47,7 @@ public class GyroscopeActivity extends BleServiceBindingActivity {
 
         if (sensor instanceof TiPeriodicalSensor) {
             TiPeriodicalSensor periodicalSensor = (TiPeriodicalSensor) sensor;
-            periodicalSensor.setPeriod(periodicalSensor.getMinPeriod());
+            periodicalSensor.setPeriod((periodicalSensor.getMinPeriod()));
             getBleService().getBleManager().updateSensor(deviceAddress, sensor);
         }
     }

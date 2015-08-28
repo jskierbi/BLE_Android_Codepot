@@ -11,8 +11,10 @@ public class TiSensors {
 
     static {
         final TiAccelerometerSensor accelerometerSensor = new TiAccelerometerSensor();
+        final TiGyroscopeSensor gyroscopeSensor = new TiGyroscopeSensor();
 
         SENSORS.put(accelerometerSensor.getServiceUUID(), accelerometerSensor);
+        SENSORS.put(gyroscopeSensor.getServiceUUID(), gyroscopeSensor);
     }
 
     public static TiSensor<?> getSensor(String uuid) {
