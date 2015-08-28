@@ -167,13 +167,12 @@ public class DeviceScanActivity extends ListActivity
 //        DecideDeviceDialogFragment decideDeviceDialogFragment = DecideDeviceDialogFragment.newInstance(device);
 //        decideDeviceDialogFragment.show(getFragmentManager(), "DecideDeviceDialogFragment");
 
-        Intent intent = new Intent(this, RunningButtonGameActivity.class);
+        Intent intent = new Intent(this, MagnetometerActivity.class);
         intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_NAME, "Acceleration Sensor");
         intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-        ArrayList<String> devicesAddresses = new ArrayList<>();
-        devicesAddresses.add(device.getAddress());
-        intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_ADDRESSES, devicesAddresses);
-        //TODO add second player
+//        ArrayList<String> devicesAddresses = new ArrayList<>();
+//        devicesAddresses.add(device.getAddress());
+//        intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_ADDRESSES, devicesAddresses);
         startActivity(intent);
     }
 

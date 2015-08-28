@@ -46,6 +46,8 @@
             android:label="@string/title_activity_tempture"/>
         <activity android:name=".RunningButtonGameActivity"
             android:label="@string/title_activity_button"/>
+        <activity android:name=".MagnetometerActivity"
+            android:label="@string/title_activity_magnetometer"/>
     </application>
 
 </manifest>

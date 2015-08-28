@@ -28,4 +28,6 @@
     <string name="title_activity_tempture">TemptureActivity</string>
     <string name="button_game_sample_name">Button game</string>
     <string name="title_activity_button">KeysExample</string>
+    <string name="magnetometer_sample_name">Magnetometer</string>
+    <string name="title_activity_magnetometer">Magnetometer Activity</string>
 </resources>
