@@ -126,8 +126,10 @@ public class TiGyroscopeSensor extends TiRangeSensors<float[], Float> {
     @Override
     public float[] parse(BluetoothGattCharacteristic c) {
         // NB: x,y,z has a weird order.
-        //TODO use delivered specification to parse gyro values from characteristics
+        float y = TiSensorUtils.shortSignedAtOffset(c, 0) * (500f / 65536f) * -1;
+        float x = TiSensorUtils.shortSignedAtOffset(c, 2) * (500f / 65536f);
+        float z = TiSensorUtils.shortSignedAtOffset(c, 4) * (500f / 65536f);
 
-        return new float[]{0, 0, 0};
+        return new float[]{x, y, z};
     }
 }
