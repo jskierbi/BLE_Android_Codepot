@@ -5,7 +5,7 @@ android {
   buildToolsVersion "23.0.0"
 
   defaultConfig {
-    applicationId "com.zinno.sensortagcodepot"
+    applicationId "com.zinno.sensortagcodepot.fork"
     minSdkVersion 18
     targetSdkVersion 23
     versionCode 1

@@ -102,16 +102,17 @@ public class SimpleReadActivity extends AppCompatActivity {
     @Override
     public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
       Log.d(TAG, "onLeScan " + bluetoothDevice);
-
-      mScanSubject.onNext(ConnBle.DISCONNECT);
-      final BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(SimpleReadActivity.this, false, mGattCallback);
-      mConnDeviceSubscription.unsubscribe();
-      mConnDeviceSubscription = Subscriptions.create(new Action0() {
-        @Override
-        public void call() {
-          bluetoothGatt.disconnect();
-        }
-      });
+      if (bluetoothDevice.getAddress().equals("5C:31:3E:87:B4:1A")) {
+        mScanSubject.onNext(ConnBle.DISCONNECT);
+        final BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(SimpleReadActivity.this, false, mGattCallback);
+        mConnDeviceSubscription.unsubscribe();
+        mConnDeviceSubscription = Subscriptions.create(new Action0() {
+          @Override
+          public void call() {
+            bluetoothGatt.disconnect();
+          }
+        });
+      }
     }
   };
 
@@ -134,12 +135,34 @@ public class SimpleReadActivity extends AppCompatActivity {
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
       mUiSubject.onNext("onServicesDiscovered: " + gatt + " status: " + status);
       super.onServicesDiscovered(gatt, status);
+
+      if (status == BluetoothGatt.GATT_SUCCESS) {
+//        broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
+      } else {
+        Log.w(TAG, "onServicesDiscovered received: " + status);
+      }
     }
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
       mUiSubject.onNext("onConnectionStateChanged: " + gatt + " status: " + status + " newState: " + newState);
-      super.onConnectionStateChange(gatt, status, newState);
+
+      if (newState == BluetoothProfile.STATE_CONNECTED) {
+        boolean flgDiscoverServices = gatt.discoverServices();
+        Log.i(TAG, "Connected to GATT server.");
+        Log.i(TAG, "Attempting to start service discovery:" + flgDiscoverServices);
+
+      } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+        mUiSubject.onNext("Disconnected");
+      }
+    }
+
+    @Override
+    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+      if (status == BluetoothGatt.GATT_SUCCESS) {
+        mUiSubject.onNext("onCharacteristicRead: " + characteristic);
+//        broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+      }
     }
 
     // -------
@@ -176,11 +199,6 @@ public class SimpleReadActivity extends AppCompatActivity {
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
       super.onCharacteristicWrite(gatt, characteristic, status);
-    }
-
-    @Override
-    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-      super.onCharacteristicRead(gatt, characteristic, status);
     }
   };
 }
