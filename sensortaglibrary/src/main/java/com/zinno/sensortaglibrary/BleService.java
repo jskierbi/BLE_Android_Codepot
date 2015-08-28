@@ -10,6 +10,7 @@ import android.os.Looper;
 
 import com.zinno.sensortaglibrary.ble.BleManager;
 import com.zinno.sensortaglibrary.ble.BleServiceListener;
+import com.zinno.sensortaglibrary.sensor.TiSensor;
 
 import java.util.List;
 
@@ -61,12 +62,26 @@ public class BleService extends Service implements BleServiceListener {
         bleManager.close();
     }
 
+    public void updateSensor(String deviceAddress, TiSensor<?> sensor) {
+        bleManager.updateSensor(deviceAddress, sensor);
+    }
+
     public BleManager getBleManager() {
         return bleManager;
     }
 
     public void setServiceListener(BleServiceListener listener) {
         serviceListener = listener;
+    }
+
+    /**
+     * Enables or disables notification on a give characteristic.
+     *
+     * @param sensor  sensor to be enabled/disabled
+     * @param enabled If true, enable notification.  False otherwise.
+     */
+    public void enableSensor(String address, TiSensor<?> sensor, boolean enabled) {
+        bleManager.enableSensor(address, sensor, enabled);
     }
 
     /**

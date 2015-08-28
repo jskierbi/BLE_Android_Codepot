@@ -6,10 +6,14 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothProfile;
 
+import com.zinno.sensortaglibrary.sensor.TiSensor;
+
 import java.util.LinkedList;
 
 /**
  * Created by steven on 9/3/13.
+ * Modified by krzysztof wrobel on 27/8/15.
+ * Implementation of communication action queue for gattCallback
  */
 public class BleGattExecutor extends BluetoothGattCallback {
 
@@ -60,6 +64,17 @@ public class BleGattExecutor extends BluetoothGattCallback {
 
     private final LinkedList<ServiceAction> queue = new LinkedList<ServiceAction>();
     private volatile ServiceAction currentAction;
+
+    public void update(BluetoothGatt gatt, final TiSensor sensor) {
+        queue.add(sensor.update(gatt));
+    }
+
+    public void enable(BluetoothGatt gatt, TiSensor sensor, boolean enable) {
+        final ServiceAction[] actions = sensor.enable(gatt, enable);
+        for (ServiceAction action : actions) {
+            this.queue.add(action);
+        }
+    }
 
     public void executeNextAction() {
         if (currentAction != null) {

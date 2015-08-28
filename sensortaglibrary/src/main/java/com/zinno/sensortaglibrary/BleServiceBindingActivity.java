@@ -98,6 +98,7 @@ public abstract class BleServiceBindingActivity extends ActionBarActivity
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         bleService = ((BleService.LocalBinder) service).getService();
+        bleService.setServiceListener(this);
 
         if (!bleService.getBleManager().initialize(getBaseContext())) {
             Log.e(TAG, "Unable to initialize Bluetooth");

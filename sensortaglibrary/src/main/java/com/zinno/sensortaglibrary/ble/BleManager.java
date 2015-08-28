@@ -9,6 +9,8 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.util.Log;
 
+import com.zinno.sensortaglibrary.sensor.TiSensor;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -144,6 +146,40 @@ public class BleManager implements BleExecutorListener {
                 gatt = null;
             }
         }
+    }
+
+    public void updateSensor(String deviceAddress, TiSensor<?> sensor) {
+        BluetoothGatt gatt = adressToGattHashMap.get(deviceAddress);
+        if (sensor == null)
+            return;
+
+        if (adapter == null || gatt == null) {
+            Log.w(TAG, "BluetoothAdapter not initialized");
+            return;
+        }
+
+        executor.update(gatt, sensor);
+        executor.executeNextAction();
+    }
+
+    /**
+     * Enables or disables notification on a give characteristic.
+     *
+     * @param sensor  sensor to be enabled/disabled
+     * @param enabled If true, enable notification.  False otherwise.
+     */
+    public void enableSensor(String address, TiSensor<?> sensor, boolean enabled) {
+        BluetoothGatt gatt = adressToGattHashMap.get(address);
+        if (sensor == null)
+            return;
+
+        if (adapter == null || gatt == null) {
+            Log.w(TAG, "BluetoothAdapter not initialized");
+            return;
+        }
+
+        executor.enable(gatt, sensor, enabled);
+        executor.executeNextAction();
     }
 
     /**
