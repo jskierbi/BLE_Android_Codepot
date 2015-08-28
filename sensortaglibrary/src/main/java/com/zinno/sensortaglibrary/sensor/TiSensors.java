@@ -16,6 +16,7 @@ public class TiSensors {
         final TiTemperatureSensor temperatureSensor = new TiTemperatureSensor();
         final TiKeysSensor keysSensor = new TiKeysSensor();
         final TiMagnetometerSensor magnetometerSensor = new TiMagnetometerSensor();
+        final TiPressureSensor pressureSensor = new TiPressureSensor();
 
         SENSORS.put(accelerometerSensor.getServiceUUID(), accelerometerSensor);
         SENSORS.put(gyroscopeSensor.getServiceUUID(), gyroscopeSensor);
@@ -23,6 +24,7 @@ public class TiSensors {
         SENSORS.put(temperatureSensor.getServiceUUID(), temperatureSensor);
         SENSORS.put(keysSensor.getServiceUUID(), keysSensor);
         SENSORS.put(magnetometerSensor.getServiceUUID(), magnetometerSensor);
+        SENSORS.put(pressureSensor.getServiceUUID(), pressureSensor);
     }
 
     public static TiSensor<?> getSensor(String uuid) {

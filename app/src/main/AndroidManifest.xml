@@ -48,6 +48,8 @@
             android:label="@string/title_activity_button"/>
         <activity android:name=".MagnetometerActivity"
             android:label="@string/title_activity_magnetometer"/>
+        <activity android:name=".PressureActivity"
+            android:label="@string/title_activity_pressure"/>
     </application>
 
 </manifest>

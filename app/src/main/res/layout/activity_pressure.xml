@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:keepScreenOn="true"
+    tools:context="com.zinno.mceconf.samples.PressureActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/action_bar"
+        style="@style/ViewerToolbarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationContentDescription="@string/abc_action_bar_up_description" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                android:text="Put your SensorTag in blown baloon or hermetic bag. Then click calibrate and squeeze it to obeserve status changes."
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ToggleButton
+            android:id="@+id/tb_free_occupied"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/free_occupied"
+
+            android:textOff="Free"
+            android:textOn="Occupied" />
+
+        <Button
+            android:id="@+id/b_calibrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Calibrate" />
+    </LinearLayout>
+
+
+</LinearLayout>

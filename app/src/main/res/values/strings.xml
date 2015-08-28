@@ -30,4 +30,6 @@
     <string name="title_activity_button">KeysExample</string>
     <string name="magnetometer_sample_name">Magnetometer</string>
     <string name="title_activity_magnetometer">Magnetometer Activity</string>
+    <string name="barometer_sample_name">Barometer</string>
+    <string name="title_activity_pressure">PressureActivity</string>
 </resources>
