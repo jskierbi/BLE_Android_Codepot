@@ -10,6 +10,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.zinno.sensortaglibrary.sensor.TiSensor;
+import com.zinno.sensortaglibrary.sensor.TiSensors;
 
 import java.util.HashMap;
 import java.util.List;
@@ -255,6 +256,13 @@ public class BleManager implements BleExecutorListener {
         if (status != BluetoothGatt.GATT_SUCCESS)
             return;
 
+        final TiSensor<?> sensor = TiSensors.getSensor(characteristic.getService().getUuid().toString());
+        if (sensor != null) {
+            if (sensor.onCharacteristicRead(characteristic)) {
+                return;
+            }
+        }
+
         String deviceAddress = gattToAdressHashMap.get(gatt);
         broadcastUpdate(deviceAddress, characteristic);
     }
@@ -272,16 +280,24 @@ public class BleManager implements BleExecutorListener {
         final Object data;
         final String text;
 
-        byte[] datas = characteristic.getValue();
-        data = datas;
-        // For all other profiles, writes the datas formatted in HEX.
-        if (datas != null && datas.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(datas.length);
-            for (byte byteChar : datas)
-                stringBuilder.append(String.format("%02X ", byteChar));
-            text = new String(datas) + "\n" + stringBuilder.toString();
+        final TiSensor<?> sensor = TiSensors.getSensor(serviceUuid);
+        if (sensor != null) {
+            sensor.onCharacteristicChanged(characteristic);
+            text = sensor.getDataString();
+            Object sensorData = sensor.getData();
+            data = sensorData;
         } else {
-            text = null;
+            byte[] datas = characteristic.getValue();
+            data = datas;
+            // For all other profiles, writes the datas formatted in HEX.
+            if (datas != null && datas.length > 0) {
+                final StringBuilder stringBuilder = new StringBuilder(datas.length);
+                for (byte byteChar : datas)
+                    stringBuilder.append(String.format("%02X ", byteChar));
+                text = new String(datas) + "\n" + stringBuilder.toString();
+            } else {
+                text = null;
+            }
         }
 
         if (serviceListener != null) {
