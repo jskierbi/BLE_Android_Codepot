@@ -1,17 +1,43 @@
 package com.zinno.sensortagcodepot;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import com.zinno.sensortaglibrary.BleService;
 import com.zinno.sensortaglibrary.BleServiceBindingActivity;
+import com.zinno.sensortaglibrary.sensor.TiAccelerometerSensor;
+import com.zinno.sensortaglibrary.sensor.TiPeriodicalSensor;
+import com.zinno.sensortaglibrary.sensor.TiSensor;
+import com.zinno.sensortaglibrary.sensor.TiSensors;
 
 public class AccelerometerActivity extends BleServiceBindingActivity {
+    public static final String TAG = AccelerometerActivity.class.getSimpleName();
+
+    private TiSensor<?> accelerationSensor;
+    private TextView accelerationTextView;
+
+    private boolean sensorEnabled = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accelerometer);
+
+        accelerationTextView = (TextView) findViewById(R.id.tv_acceleration);
+
+        accelerationSensor = TiSensors.getSensor(TiAccelerometerSensor.UUID_SERVICE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BleService bleService = getBleService();
+        if (bleService != null && sensorEnabled) {
+            getBleService().enableSensor(getDeviceAddress(), accelerationSensor, false);
+        }
     }
 
     @Override
@@ -23,17 +49,33 @@ public class AccelerometerActivity extends BleServiceBindingActivity {
 
     @Override
     public void onServiceDiscovered(String deviceAddress) {
-        super.onServiceDiscovered(deviceAddress);
+        sensorEnabled = true;
 
-        //TODO enable accelerometer sensor on BleService
-        //TODO update reading frequency
+        getBleService().enableSensor(getDeviceAddress(), accelerationSensor, true);
+        if (accelerationSensor instanceof TiPeriodicalSensor) {
+            TiPeriodicalSensor periodicalSensor = (TiPeriodicalSensor) accelerationSensor;
+            periodicalSensor.setPeriod(periodicalSensor.getMinPeriod());
+
+            getBleService().getBleManager().updateSensor(deviceAddress, accelerationSensor);
+        }
     }
 
     @Override
     public void onDataAvailable(String deviceAddress, String serviceUuid, String characteristicUUid, String text, Object data) {
-        super.onDataAvailable(deviceAddress, serviceUuid, characteristicUUid, text, data);
+        Log.d(TAG, String.format("ServiceUUID: %s, CharacteristicUUIS: %s", serviceUuid, characteristicUUid));
+        //Data as string
+        Log.d(TAG, String.format("Data: %s", text));
 
-        //TODO Parse and present acceleratin data. Requires proper implementation of parse method in TiAccelerometerSensor
+        TiSensor<?> tiSensor = TiSensors.getSensor(serviceUuid);
+        //First way to get data
+        final TiAccelerometerSensor tiAccelerometerSensor = (TiAccelerometerSensor) tiSensor;
+        float[] accelerationValues = tiAccelerometerSensor.getData();
+
+        //Second way to get data
+        float[] accelerationValues1 = (float[]) data;
+
+        accelerationTextView.setText(text);
+
     }
 
     @Override

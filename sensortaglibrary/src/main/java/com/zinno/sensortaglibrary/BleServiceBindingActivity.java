@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.zinno.sensortaglibrary.ble.BleServiceListener;
@@ -13,7 +13,7 @@ import com.zinno.sensortaglibrary.ble.BleServiceListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BleServiceBindingActivity extends ActionBarActivity
+public abstract class BleServiceBindingActivity extends AppCompatActivity
         implements BleServiceListener,
         ServiceConnection {
     private final static String TAG = BleServiceBindingActivity.class.getSimpleName();

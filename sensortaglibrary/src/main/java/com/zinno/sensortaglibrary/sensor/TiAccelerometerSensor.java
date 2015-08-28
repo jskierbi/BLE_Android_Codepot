@@ -128,15 +128,15 @@ public class TiAccelerometerSensor extends TiRangeSensors<float[], Float> {
      * (illustrated by the apps accelerometer image)
      * */
 
-        //TODO properly parse data
-        // Helper
-        // Values from Sensor tag come as SINT8
-        // to read them you can use below line
-         Integer v1 = c.getIntValue(FORMAT_SINT8, 0);
+        Integer x = c.getIntValue(FORMAT_SINT8, 0);
+        Integer y = c.getIntValue(FORMAT_SINT8, 1);
+        Integer z = -1 * c.getIntValue(FORMAT_SINT8, 2);
 
-        //In case of acceleration you need to read all 3 axes
+        double scaledX = x / 16.0;
+        double scaledY = y / 16.0;
+        double scaledZ = z / 16.0;
 
-        return new float[]{0, 0, 0};
+        return new float[]{(float) scaledX, (float) scaledY, (float) scaledZ};
     }
 
 }

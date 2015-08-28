@@ -14,9 +14,9 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.zinno.sensortagcodepot.adapters.BleDevicesAdapter;
-import com.zinno.sensortagcodepot.dialogs.DecideDeviceDialogFragment;
 import com.zinno.sensortagcodepot.dialogs.EnableBluetoothDialog;
 import com.zinno.sensortagcodepot.dialogs.ErrorDialog;
+import com.zinno.sensortaglibrary.BleServiceBindingActivity;
 import com.zinno.sensortaglibrary.ble.BleDevicesScanner;
 import com.zinno.sensortaglibrary.ble.BleUtils;
 
@@ -162,8 +162,13 @@ public class DeviceScanActivity extends ListActivity
         if (device == null)
             return;
 
-        DecideDeviceDialogFragment decideDeviceDialogFragment = DecideDeviceDialogFragment.newInstance(device);
-        decideDeviceDialogFragment.show(getFragmentManager(), "DecideDeviceDialogFragment");
+//        DecideDeviceDialogFragment decideDeviceDialogFragment = DecideDeviceDialogFragment.newInstance(device);
+//        decideDeviceDialogFragment.show(getFragmentManager(), "DecideDeviceDialogFragment");
+
+        Intent intent = new Intent(this, AccelerometerActivity.class);
+        intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_NAME, "Acceleration Sensor");
+        intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        startActivity(intent);
     }
 
     private void init() {
