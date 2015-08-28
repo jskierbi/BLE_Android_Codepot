@@ -25,5 +25,6 @@ dependencies {
 
     compile project(':sensortaglibrary')
 
+    compile 'com.jakewharton:butterknife:6.0.0'
     compile 'com.google.code.gson:gson:2.3'
 }

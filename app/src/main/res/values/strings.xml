@@ -26,4 +26,6 @@
     <string name="title_activity_gyroscope">GyroscopeActivity</string>
     <string name="title_activity_humidity">HumidityActivity</string>
     <string name="title_activity_tempture">TemptureActivity</string>
+    <string name="button_game_sample_name">Button game</string>
+    <string name="title_activity_button">KeysExample</string>
 </resources>

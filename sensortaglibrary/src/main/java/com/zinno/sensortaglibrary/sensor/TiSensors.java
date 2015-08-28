@@ -14,11 +14,13 @@ public class TiSensors {
         final TiGyroscopeSensor gyroscopeSensor = new TiGyroscopeSensor();
         final TiHumiditySensor humiditySensor = new TiHumiditySensor();
         final TiTemperatureSensor temperatureSensor = new TiTemperatureSensor();
+        final TiKeysSensor keysSensor = new TiKeysSensor();
 
         SENSORS.put(accelerometerSensor.getServiceUUID(), accelerometerSensor);
         SENSORS.put(gyroscopeSensor.getServiceUUID(), gyroscopeSensor);
         SENSORS.put(humiditySensor.getServiceUUID(), humiditySensor);
         SENSORS.put(temperatureSensor.getServiceUUID(), temperatureSensor);
+        SENSORS.put(keysSensor.getServiceUUID(), keysSensor);
     }
 
     public static TiSensor<?> getSensor(String uuid) {

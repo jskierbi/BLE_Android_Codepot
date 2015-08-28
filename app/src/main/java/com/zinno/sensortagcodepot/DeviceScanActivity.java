@@ -20,6 +20,8 @@ import com.zinno.sensortaglibrary.BleServiceBindingActivity;
 import com.zinno.sensortaglibrary.ble.BleDevicesScanner;
 import com.zinno.sensortaglibrary.ble.BleUtils;
 
+import java.util.ArrayList;
+
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
@@ -165,9 +167,13 @@ public class DeviceScanActivity extends ListActivity
 //        DecideDeviceDialogFragment decideDeviceDialogFragment = DecideDeviceDialogFragment.newInstance(device);
 //        decideDeviceDialogFragment.show(getFragmentManager(), "DecideDeviceDialogFragment");
 
-        Intent intent = new Intent(this, TemperatureActivity.class);
+        Intent intent = new Intent(this, RunningButtonGameActivity.class);
         intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_NAME, "Acceleration Sensor");
         intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        ArrayList<String> devicesAddresses = new ArrayList<>();
+        devicesAddresses.add(device.getAddress());
+        intent.putExtra(BleServiceBindingActivity.EXTRAS_DEVICE_ADDRESSES, devicesAddresses);
+        //TODO add second player
         startActivity(intent);
     }
 
